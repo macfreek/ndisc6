@@ -101,6 +101,8 @@ AS_IF([test "x${enable_suid_install}" != "xno"],
 AM_CONDITIONAL(NOSUID, [test "${enable_suid_install}" = "no"])
 AC_MSG_RESULT([${enable_suid_install}])
 
+# Use RFC 3542-compatible inet6.h headers on Darwin (Mac OS X)
+CPPFLAGS="$CPPFLAGS -D__APPLE_USE_RFC_3542"
 
 # Defines for <config.h>
 AH_BOTTOM([

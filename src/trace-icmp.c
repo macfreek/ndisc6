@@ -40,19 +40,15 @@ send_echo_probe (int fd, unsigned ttl, unsigned n, size_t plen, uint16_t port)
 	if (plen < sizeof (struct icmp6_hdr))
 		plen = sizeof (struct icmp6_hdr);
 
-	struct
-	{
-		struct icmp6_hdr ih;
-		uint8_t payload[plen - sizeof (struct icmp6_hdr)];
-	} packet;
+	char packet[plen];
 	memset (&packet, 0, plen);
 
-	packet.ih.icmp6_type = ICMP6_ECHO_REQUEST;
-	packet.ih.icmp6_id = htons (getpid ());
-	packet.ih.icmp6_seq = htons ((ttl << 8) | (n & 0xff));
+	((struct icmp6_hdr *)&packet)->icmp6_type = ICMP6_ECHO_REQUEST;
+	((struct icmp6_hdr *)&packet)->icmp6_id = htons (getpid ());
+	((struct icmp6_hdr *)&packet)->icmp6_seq = htons ((ttl << 8) | (n & 0xff));
 	(void)port;
 
-	return send_payload (fd, &packet.ih, plen, ttl);
+	return send_payload (fd, &packet, plen, ttl);
 }
 
 
